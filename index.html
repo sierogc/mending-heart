@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Due Chat Randomiche Bilanciate e Responsive</title>
+    <title>Due Chat con Ruoli Invertiti nella Seconda</title>
     
     <style>
         /* Impostazioni globali */
@@ -56,7 +56,7 @@
         .chat-window {
             flex-grow: 1; 
             padding: 20px 10px;
-            overflow-y: auto; /* SCROLL MANUALE */
+            overflow-y: auto; 
             display: flex;
             flex-direction: column;
             gap: 10px; 
@@ -75,8 +75,10 @@
             position: relative; 
         }
 
-        /* Forme delle bolle iMessage (Destinatario) */
-        .message.recipient {
+        /* Stili Base per Chat 1 */
+        
+        /* Forme delle bolle iMessage (Destinatario) -> Griga a Sinistra */
+        .message.recipient-default {
             align-self: flex-start;
             background-color: #e5e5ea;
             color: #000000;
@@ -86,8 +88,8 @@
             border-bottom-left-radius: 4px; 
         }
 
-        /* Forme delle bolle iMessage (Mittente) */
-        .message.sender {
+        /* Forme delle bolle iMessage (Mittente) -> Blu a Destra */
+        .message.sender-default {
             align-self: flex-end;
             background-color: #007aff;
             color: #ffffff;
@@ -96,13 +98,36 @@
             border-bottom-left-radius: 18px;
             border-bottom-right-radius: 4px; 
         }
+        
+        /* Stili INVERTITI per Chat 2 */
+        
+        /* Forme delle bolle iMessage (Destinatario) -> Blu a Destra */
+        #chat-window-2 .message.recipient-inverted {
+            align-self: flex-end;
+            background-color: #007aff;
+            color: #ffffff;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 4px; 
+        }
+        
+        /* Forme delle bolle iMessage (Mittente) -> Griga a Sinistra */
+        #chat-window-2 .message.sender-inverted {
+            align-self: flex-start;
+            background-color: #e5e5ea;
+            color: #000000;
+            border-top-left-radius: 18px;
+            border-top-right-radius: 18px;
+            border-bottom-right-radius: 18px;
+            border-bottom-left-radius: 4px; 
+        }
 
 
         /* Indicatore "Sta scrivendo..." */
         .typing-indicator {
             display: none; 
-            align-self: flex-start;
-            background-color: #e5e5ea;
+            background-color: #e5e5ea; /* Colore Destinatario predefinito */
             color: #000000;
             
             padding: 12px 18px 12px 18px; 
@@ -121,6 +146,22 @@
             box-sizing: content-box; 
             position: relative;
         }
+
+        /* Allineamento indicatore per Chat 1 (Destinatario = Sinistra) */
+        #typing-indicator-1 {
+             align-self: flex-start;
+        }
+
+        /* Allineamento indicatore per Chat 2 (Destinatario INVERTITO = Destra) */
+        #typing-indicator-2 {
+             align-self: flex-end;
+             border-top-left-radius: 18px;
+             border-top-right-radius: 18px;
+             border-bottom-left-radius: 18px;
+             border-bottom-right-radius: 4px; 
+             border-bottom-left-radius: 18px; /* Override per far vedere che è diverso */
+        }
+
 
         /* Animazione puntini iOS */
         @keyframes ios-dot-fade {
@@ -210,22 +251,16 @@
         /* RESPONSIVITÀ COMPLETA: Schermi stretti (es. Smartphone) */
         @media (max-width: 800px) {
             #main-container {
-                /* Permette alle colonne di andare a capo */
                 flex-direction: column; 
-                
-                /* Regola l'altezza e la spaziatura per la modalità verticale */
                 height: 100vh;
                 padding: 10px;
                 gap: 20px;
-                overflow-y: auto; /* Abilita lo scroll per l'intero blocco se necessario */
+                overflow-y: auto; 
             }
 
             .chat-container {
-                /* Fa sì che ogni chat occupi il 100% della larghezza */
                 width: 100%;
                 max-width: none;
-                
-                /* Forza le chat a occupare metà dell'altezza ciascuna, ottimale per lo smartphone */
                 height: 50vh; 
             }
         }
@@ -353,13 +388,12 @@
                     
                     let nextIsRecipient;
                     
-                    // Logica di bilanciamento per finire insieme
                     if (senderCount === recipientCount) {
                         nextIsRecipient = Math.random() < 0.5;
                     } else if (senderCount < recipientCount) {
-                        nextIsRecipient = Math.random() < 0.3; // Favorisce il Sender
-                    } else { // senderCount > recipientCount
-                        nextIsRecipient = Math.random() < 0.7; // Favorisce il Recipient
+                        nextIsRecipient = Math.random() < 0.3; 
+                    } else { 
+                        nextIsRecipient = Math.random() < 0.7; 
                     }
 
 
@@ -381,7 +415,7 @@
                     } 
                     
                     else {
-                        // Se la persona "scelta" non ha più frasi, diamo la possibilità all'altra di finire il pool
+                        // Gestione dei pool in esaurimento
                         if (senderIndex < shuffledSender.length) {
                             const typingTime = shuffledSender[senderIndex].length * (Math.random() * 50 + 50); 
                             script.push({ type: 'sender_text_typing', text: shuffledSender[senderIndex], delay: Math.round(typingTime) });
@@ -406,7 +440,7 @@
             function generateUniqueScripts() {
                 let script1;
                 let script2;
-                const MAX_ATTEMPTS = 10; // Evita loop infiniti in caso di sfortuna estrema
+                const MAX_ATTEMPTS = 10; 
 
                 let attempt1 = 0;
                 do {
@@ -433,7 +467,7 @@
             }
 
             // =================================================================
-            // === LOGICA PER UNA SINGOLA CHAT ===
+            // === LOGICA PER UNA SINGOLA CHAT (ADATTATA PER RUOLI INVERTITI) ===
             // =================================================================
 
             class ChatController {
@@ -445,23 +479,29 @@
                     this.inputMessageTyping = document.getElementById(`input-message-typing-${id}`); 
                     this.script = script;
                     this.id = id;
+                    
+                    // Definisce le classi CSS appropriate
+                    this.recipientClass = id === 1 ? 'recipient-default' : 'recipient-inverted';
+                    this.senderClass = id === 1 ? 'sender-default' : 'sender-inverted';
                 }
 
-                addMessage(text, senderClass) {
+                addMessage(text, type) {
                     const messageElement = document.createElement('div');
+                    
+                    // Assegna la classe basata sul tipo (sender/recipient)
+                    const senderClass = type === 'sender' ? this.senderClass : this.recipientClass;
+                    
                     messageElement.classList.add('message', senderClass);
                     messageElement.textContent = text;
                     this.chatWindow.insertBefore(messageElement, this.typingIndicator);
-                    // RIMOZIONE: this.chatWindow.scrollTop = this.chatWindow.scrollHeight; 
                     
-                    if (senderClass === 'recipient') {
+                    if (type === 'recipient') {
                         receiveAudio.play().catch(e => console.log(`[Chat ${this.id}] Errore riproduzione audio ricezione:`, e));
                     }
                 }
 
                 showTyping() { 
                     this.typingIndicator.style.display = 'flex'; 
-                    // RIMOZIONE: this.chatWindow.scrollTop = this.chatWindow.scrollHeight; 
                 }
                 hideTyping() { 
                     this.typingIndicator.style.display = 'none'; 
@@ -480,7 +520,6 @@
                     
                     for (let i = 0; i < text.length; i++) {
                         this.inputMessageTyping.textContent += text.charAt(i);
-                        // RIMOZIONE: this.chatWindow.scrollTop = this.chatWindow.scrollHeight; 
                         await sleep(charDelay);
                     }
                     
@@ -507,7 +546,8 @@
                         if (step.type === 'message') {
                             this.hideTyping();
                             this.resetInputBar(); 
-                            this.addMessage(step.text, step.sender);
+                            // Passa il tipo (sender/recipient) e la logica gestirà la classe corretta
+                            this.addMessage(step.text, step.sender); 
                         } else if (step.type === 'typing') { 
                             this.showTyping();
                         } else if (step.type === 'sender_text_typing') { 
@@ -515,14 +555,12 @@
                         }
                     }
 
-                    // Segnala che questa chat ha finito
                     if (this.id === 1) {
                         chat1Finished = true;
                     } else {
                         chat2Finished = true;
                     }
 
-                    // Avvia il riavvio solo se entrambe le chat hanno finito
                     if (chat1Finished && chat2Finished) {
                         await startNewIteration();
                     }
@@ -534,10 +572,8 @@
             // =================================================================
 
             async function generateAndStartChats() {
-                // Genera due script unici
                 const { script1, script2 } = generateUniqueScripts();
 
-                // Crea o aggiorna i controller
                 if (!chat1) {
                     chat1 = new ChatController(1, script1);
                     chat2 = new ChatController(2, script2);
@@ -546,11 +582,9 @@
                     chat2.script = script2;
                 }
 
-                // Resetta lo stato di completamento
                 chat1Finished = false;
                 chat2Finished = false;
 
-                // Avvia le chat con un piccolo sfasamento temporale casuale
                 chat1.runScript();
                 sleep(Math.random() * 1000).then(() => chat2.runScript());
             }
@@ -559,7 +593,6 @@
                 // PAUSA DI 15 SECONDI
                 await sleep(15000); 
 
-                // Pulisci entrambe le chat
                 chat1.chatWindow.querySelectorAll('.message').forEach(msg => msg.remove());
                 chat2.chatWindow.querySelectorAll('.message').forEach(msg => msg.remove());
                 
@@ -570,7 +603,6 @@
 
                 await sleep(500);
                 
-                // Riavvia con nuovi script unici
                 await generateAndStartChats();
             }
 
