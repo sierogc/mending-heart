@@ -379,10 +379,12 @@
                 let senderCount = 0;
                 let recipientCount = 0;
 
-                // 1. Frase iniziale fissa del destinatario (Due azioni separate)
+                // 1. Frase iniziale fissa del destinatario
+                const initialText = fixedRecipientStart;
+                const initialTypingDuration = initialText.length * (Math.random() * 50 + 70); // Durata proporzionale
                 script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
-                script.push({ type: 'typing_start', sender: 'recipient', delay: Math.floor(Math.random() * 1000) + 500 }); 
-                script.push({ type: 'message', sender: 'recipient', text: fixedRecipientStart, delay: Math.floor(Math.random() * 1500) + 1000 });
+                script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(initialTypingDuration) }); // DURATA PROPORZIONALE
+                script.push({ type: 'message', sender: 'recipient', text: initialText, delay: Math.floor(Math.random() * 1500) + 1000 });
                 recipientCount++; 
 
                 // 2. Corpo della conversazione casuale bilanciata
@@ -401,13 +403,15 @@
 
                     if (nextIsRecipient && recipientIndex < shuffledRecipientBody.length) {
                         // Turno del Destinatario: Inizia a digitare -> Invia messaggio
+                        const text = shuffledRecipientBody[recipientIndex];
+                        const typingDuration = text.length * (Math.random() * 50 + 70); // Durata proporzionale
                         
                         // 1. Aspetta un tempo di reazione
                         script.push({ type: 'wait', delay: Math.floor(Math.random() * 1500) + 500 });
-                        // 2. Inizia a digitare (simula la durata della digitazione)
-                        script.push({ type: 'typing_start', sender: 'recipient', delay: Math.floor(Math.random() * 1000) + 500 }); 
+                        // 2. Inizia a digitare (durata proporzionale)
+                        script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(typingDuration) }); 
                         // 3. Invia il messaggio
-                        script.push({ type: 'message', sender: 'recipient', text: shuffledRecipientBody[recipientIndex], delay: Math.floor(Math.random() * 1000) + 500 });
+                        script.push({ type: 'message', sender: 'recipient', text: text, delay: Math.floor(Math.random() * 1000) + 500 });
                         recipientIndex++;
                         recipientCount++;
                     } 
@@ -416,7 +420,7 @@
                         // Turno del Mittente: Inizia a digitare -> Invia messaggio
                         
                         const text = shuffledSender[senderIndex];
-                        const typingTime = text.length * (Math.random() * 50 + 50); 
+                        const typingTime = text.length * (Math.random() * 50 + 50); // Durata proporzionale anche qui
                         
                         // 1. Aspetta un tempo di reazione
                         script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
@@ -440,9 +444,12 @@
                             senderIndex++;
                             senderCount++;
                         } else if (recipientIndex < shuffledRecipientBody.length) {
+                            const text = shuffledRecipientBody[recipientIndex];
+                            const typingDuration = text.length * (Math.random() * 50 + 70);
+                            
                             script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
-                            script.push({ type: 'typing_start', sender: 'recipient', delay: Math.floor(Math.random() * 1000) + 500 }); 
-                            script.push({ type: 'message', sender: 'recipient', text: shuffledRecipientBody[recipientIndex], delay: Math.floor(Math.random() * 1000) + 500 });
+                            script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(typingDuration) }); 
+                            script.push({ type: 'message', sender: 'recipient', text: text, delay: Math.floor(Math.random() * 1000) + 500 });
                             recipientIndex++;
                             recipientCount++;
                         } else {
@@ -512,6 +519,9 @@
                     messageElement.textContent = text;
                     this.chatWindow.insertBefore(messageElement, this.typingIndicator);
                     
+                    // Fai scrollare in basso dopo un nuovo messaggio
+                    this.chatWindow.scrollTop = this.chatWindow.scrollHeight;
+
                     if (type === 'recipient') {
                         // Tenta la riproduzione. Se fallisce per restrizioni, il browser ignora.
                         receiveAudio.play().catch(e => {}); 
@@ -520,6 +530,8 @@
 
                 showTyping() { 
                     this.typingIndicator.style.display = 'flex'; 
+                    // Fai scrollare in basso quando l'indicatore appare
+                    this.chatWindow.scrollTop = this.chatWindow.scrollHeight;
                 }
                 hideTyping() { 
                     this.typingIndicator.style.display = 'none'; 
@@ -572,8 +584,8 @@
                             this.addMessage(step.text, step.sender); 
                         } else if (step.type === 'typing_start' && step.sender === 'recipient') { 
                             // Avvia la simulazione "Sta scrivendo..." per il Recipient
-                            await sleep(step.delay); 
                             this.showTyping();
+                            await sleep(step.delay); // Attende il tempo proporzionale
                         } else if (step.type === 'sender_text_typing_start') { 
                             // Avvia la digitazione nella barra di input per il Sender
                             await sleep(step.delay); 
