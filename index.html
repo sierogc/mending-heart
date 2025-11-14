@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>♥</title>
+    <title>Due Chat Randomiche Indipendenti</title>
     
     <style>
         /* Impostazioni globali */
@@ -22,22 +22,33 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
-            overflow: hidden; 
+            overflow-x: auto; 
+        }
+
+        /* Contenitore Principale per le Due Chat */
+        #main-container {
+            display: flex;
+            gap: 40px; 
+            padding: 20px;
+            height: 100%;
+            align-items: center;
         }
 
         /* Lo schermo centrato (responsive) */
-        #chat-container {
+        .chat-container {
             width: 100%;
             max-width: 400px; 
-            height: 100vh; 
+            height: 95vh; 
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
             overflow: hidden; 
+            border: none; 
+            box-shadow: none;
         }
         
         /* Finestra dove appaiono i messaggi (Auto-scroll) */
-        #chat-window {
+        .chat-window {
             flex-grow: 1; 
             padding: 20px 10px;
             overflow-y: auto; 
@@ -83,16 +94,14 @@
 
 
         /* Indicatore "Sta scrivendo..." */
-        #typing-indicator {
+        .typing-indicator {
             display: none; 
             align-self: flex-start;
             background-color: #e5e5ea;
             color: #000000;
             
-            /* Spaziatura intorno ai puntini (più respiro) */
             padding: 12px 18px 12px 18px; 
             
-            /* Bordi come messaggio ricevuto */
             border-top-left-radius: 18px;
             border-top-right-radius: 18px;
             border-bottom-right-radius: 18px;
@@ -108,26 +117,25 @@
             position: relative;
         }
 
-        /* Animazione puntini iOS */
-        @keyframes ios-dot-bounce {
-            0%, 75%, 100% { transform: translateY(0); opacity: 0.6; }
-            25% { transform: translateY(-3px); opacity: 1; }
+        /* Animazione puntini iOS (Fade da sinistra a destra) */
+        @keyframes ios-dot-fade {
+            0%, 80%, 100% { opacity: 0.3; } 
+            40% { opacity: 1; } 
         }
 
         .dots span {
             display: inline-block;
-            /* Dimensioni puntini */
             width: 10px; 
             height: 10px; 
             background-color: #b0b0b0; 
             border-radius: 50%;
             margin: 0 3px; 
-            animation: ios-dot-bounce 1.5s infinite ease-in-out; 
+            animation: ios-dot-fade 1.5s infinite ease-in-out; 
         }
 
         .dots span:nth-child(1) { animation-delay: 0s; }
-        .dots span:nth-child(2) { animation-delay: 0.1s; } 
-        .dots span:nth-child(3) { animation-delay: 0.2s; }
+        .dots span:nth-child(2) { animation-delay: 0.2s; } 
+        .dots span:nth-child(3) { animation-delay: 0.4s; }
         
         @keyframes pop-in {
             from { opacity: 0; transform: scale(0.8); }
@@ -135,7 +143,7 @@
         }
 
         /* Barra di input finta */
-        #fake-input-bar {
+        .fake-input-bar {
             padding: 10px 15px;
             border-top: none; 
             background-color: #ffffff; 
@@ -143,7 +151,7 @@
         }
 
         /* Contenitore della barra di testo */
-        #fake-input-box {
+        .fake-input-box {
             border: none;
             background-color: #f0f2f5; 
             border-radius: 20px;
@@ -157,14 +165,14 @@
         }
 
         /* Elemento testuale normale "Messaggio" */
-        #input-typing-text {
+        .input-typing-text {
             color: #8e8e93; 
             display: block;
             white-space: nowrap; 
         }
 
         /* Testo digitato dal Mittente (Contenitore + Cursore) */
-        #input-message-typing-container {
+        .input-message-typing-container {
             display: none;
             position: relative;
             height: 100%;
@@ -173,7 +181,7 @@
             padding-right: 2px; 
         }
         
-        #input-message-typing {
+        .input-message-typing {
             color: #000000; 
             white-space: nowrap;
             overflow: hidden;
@@ -198,23 +206,41 @@
 </head>
 <body>
 
-    <div id="chat-container">
-
-        <div id="chat-window">
-            <div id="typing-indicator" class="dots">
-                <span></span>
-                <span></span>
-                <span></span>
+    <div id="main-container">
+        <div id="chat-container-1" class="chat-container">
+            <div id="chat-window-1" class="chat-window">
+                <div id="typing-indicator-1" class="typing-indicator dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="fake-input-bar">
+                <div class="fake-input-box">
+                    <span id="input-typing-text-1" class="input-typing-text">Messaggio</span>
+                    <div id="input-message-typing-container-1" class="input-message-typing-container">
+                        <span id="input-message-typing-1" class="input-message-typing"></span>
+                        <span class="caret"></span>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div id="fake-input-bar">
-            <div id="fake-input-box">
-                <span id="input-typing-text">Messaggio</span>
-                
-                <div id="input-message-typing-container">
-                    <span id="input-message-typing"></span>
-                    <span class="caret"></span>
+        <div id="chat-container-2" class="chat-container">
+            <div id="chat-window-2" class="chat-window">
+                <div id="typing-indicator-2" class="typing-indicator dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div class="fake-input-bar">
+                <div class="fake-input-box">
+                    <span id="input-typing-text-2" class="input-typing-text">Messaggio</span>
+                    <div id="input-message-typing-container-2" class="input-message-typing-container">
+                        <span id="input-message-typing-2" class="input-message-typing"></span>
+                        <span class="caret"></span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -231,125 +257,202 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
 
-            const chatWindow = document.getElementById('chat-window');
-            const typingIndicator = document.getElementById('typing-indicator'); 
-            const inputTypingText = document.getElementById('input-typing-text'); 
-            const inputMessageTypingContainer = document.getElementById('input-message-typing-container');
-            const inputMessageTyping = document.getElementById('input-message-typing'); 
-            
-            // Audio elements
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
             const typingAudio = document.getElementById('typing-audio');
             const receiveAudio = document.getElementById('receive-audio');
 
-            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+            // =================================================================
+            // === MESSAGGI BASE E GENERAZIONE RANDOMICA ===
+            // =================================================================
 
-            // =================================================================
-            // === QUI PUOI MODIFICARE LA CONVERSAZIONE ===
-            // Ogni blocco ha un 'type' (azione) e un 'delay' (ritardo prima della prossima azione).
-            // =================================================================
-            const conversationScript = [
-                { type: 'typing', delay: 1000 },
-                { type: 'message', sender: 'recipient', text: 'Ehi, ci sei?', delay: 2000 },
-                
-                { type: 'sender_text_typing', text: 'Ciao! Sì, scusa.', delay: 1500 }, 
-                { type: 'message', sender: 'sender', text: 'Ciao! Sì, scusa.', delay: 500 }, 
-                
-                { type: 'sender_text_typing', text: 'Dimmi tutto.', delay: 1000 },
-                { type: 'message', sender: 'sender', text: 'Dimmi tutto.', delay: 500 },
-                
-                { type: 'typing', delay: 1000 },
-                { type: 'message', sender: 'recipient', text: 'Volevo solo sapere se stasera ti andava di ordinare una pizza.', delay: 2500 },
-                
-                { type: 'sender_text_typing', text: 'ASSOLUTAMENTE SÌ.', delay: 1800 },
-                { type: 'message', sender: 'sender', text: 'ASSOLUTAMENTE SÌ.', delay: 200 },
-                
-                { type: 'typing', delay: 1000 },
-                { type: 'message', sender: 'recipient', text: 'Perfetto, sentiamoci verso le 19:30!', delay: 2000 }
+            const senderMessages = [
+                'Ciao! Sì, scusa.',
+                'Dimmi tutto.',
+                'ASSOLUTAMENTE SÌ.',
+                'Perfetto, ci sentiamo dopo.',
+                'Non preoccuparti, arrivo in 5 minuti.',
+                'A che ora ci vediamo stasera?',
+                'OK, prenoto io il tavolo.',
+                'Ci sto! Che ne dici di quella nuova pizzeria?'
             ];
+
+            // * MESSAGGI DESTINATARIO: Il primo è fisso, il resto è casuale
+            const fixedRecipientStart = 'Ehi, ci sei?';
+            const recipientMessagesPool = [
+                'Volevo solo sapere se ti andava di ordinare una pizza.',
+                'Perfetto, sentiamoci verso le 19:30!',
+                'Quando arrivi? Ti aspetto fuori.',
+                'Hai già mangiato?',
+                'Mi fai sapere il prima possibile, grazie.',
+                'Sì, ho visto il messaggio, grazie.',
+                'Assolutamente, ottima idea.'
+            ];
+
+            // Funzione per mischiare un array (Algoritmo Fisher-Yates)
+            function shuffleArray(array) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
+            }
+
+            // Funzione per generare una singola conversazione randomica
+            function generateRandomScript() {
+                const shuffledSender = shuffleArray(senderMessages);
+                const shuffledRecipientBody = shuffleArray(recipientMessagesPool);
+                
+                const script = [];
+
+                // 1. Inserisci la frase iniziale fissa del destinatario (Destinatario parla per primo)
+                script.push({ type: 'typing', delay: Math.floor(Math.random() * 1000) + 500 });
+                script.push({ type: 'message', sender: 'recipient', text: fixedRecipientStart, delay: Math.floor(Math.random() * 1500) + 1000 });
+                
+                // 2. Continua con il corpo della conversazione casuale
+                const maxLength = Math.max(shuffledSender.length, shuffledRecipientBody.length);
+                
+                // Per le iterazioni successive, usiamo solo i messaggi rimanenti
+                for (let i = 0; i < maxLength; i++) {
+                    
+                    // Alterna in modo casuale il turno di risposta tra destinatario (usando i messaggi rimanenti) e mittente
+                    const startWithRecipient = Math.random() < 0.5;
+
+                    if (startWithRecipient && i < shuffledRecipientBody.length) {
+                        script.push({ type: 'typing', delay: Math.floor(Math.random() * 1000) + 500 });
+                        script.push({ type: 'message', sender: 'recipient', text: shuffledRecipientBody[i], delay: Math.floor(Math.random() * 1500) + 1000 });
+                    }
+
+                    if (i < shuffledSender.length) {
+                        const typingTime = shuffledSender[i].length * (Math.random() * 50 + 50); 
+                        script.push({ type: 'sender_text_typing', text: shuffledSender[i], delay: Math.round(typingTime) });
+                        script.push({ type: 'message', sender: 'sender', text: shuffledSender[i], delay: Math.floor(Math.random() * 500) + 200 });
+                    }
+                    
+                    if (!startWithRecipient && i < shuffledRecipientBody.length) {
+                         script.push({ type: 'typing', delay: Math.floor(Math.random() * 1000) + 500 });
+                        script.push({ type: 'message', sender: 'recipient', text: shuffledRecipientBody[i], delay: Math.floor(Math.random() * 1500) + 1000 });
+                    }
+                }
+                
+                return script;
+            }
+
+            // =================================================================
+            // === LOGICA PER UNA SINGOLA CHAT (INVARIATA) ===
             // =================================================================
 
-
-            function addMessage(text, senderClass) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', senderClass);
-                messageElement.textContent = text;
-                chatWindow.insertBefore(messageElement, typingIndicator);
-                chatWindow.scrollTop = chatWindow.scrollHeight; 
-                
-                if (senderClass === 'recipient') {
-                    receiveAudio.play().catch(e => console.log("Errore riproduzione audio ricezione:", e));
+            class ChatController {
+                constructor(id, script) {
+                    this.chatWindow = document.getElementById(`chat-window-${id}`);
+                    this.typingIndicator = document.getElementById(`typing-indicator-${id}`); 
+                    this.inputTypingText = document.getElementById(`input-typing-text-${id}`); 
+                    this.inputMessageTypingContainer = document.getElementById(`input-message-typing-container-${id}`);
+                    this.inputMessageTyping = document.getElementById(`input-message-typing-${id}`); 
+                    this.script = script;
+                    this.id = id;
                 }
-            }
 
-            function showTyping() { 
-                typingIndicator.style.display = 'flex'; 
-                chatWindow.scrollTop = chatWindow.scrollHeight; 
-            }
-            function hideTyping() { typingIndicator.style.display = 'none'; }
-
-            async function typeSenderMessage(text, duration) {
-                inputTypingText.style.display = 'none';
-                inputMessageTypingContainer.style.display = 'flex'; 
-                inputMessageTyping.textContent = ''; 
-                
-                // Avvia il suono di digitazione in loop
-                typingAudio.play().catch(e => console.log("Errore riproduzione audio digitazione:", e));
-                
-                const charDelay = duration / text.length; 
-                
-                for (let i = 0; i < text.length; i++) {
-                    inputMessageTyping.textContent += text.charAt(i);
-                    chatWindow.scrollTop = chatWindow.scrollHeight; 
-                    await sleep(charDelay);
-                }
-                
-                // Ferma il suono di digitazione alla fine
-                typingAudio.pause();
-                typingAudio.currentTime = 0; 
-            }
-
-            function resetInputBar() {
-                inputTypingText.style.display = 'block';
-                inputMessageTypingContainer.style.display = 'none';
-                inputMessageTyping.textContent = '';
-                
-                // Assicurati che l'audio di digitazione sia spento
-                typingAudio.pause();
-                typingAudio.currentTime = 0;
-            }
-
-            async function runChatScript() {
-                hideTyping();
-                resetInputBar();
-
-                for (const step of conversationScript) {
-                    await sleep(step.delay);
-
-                    if (step.type === 'message') {
-                        hideTyping();
-                        resetInputBar(); 
-                        addMessage(step.text, step.sender);
-                    } else if (step.type === 'typing') { 
-                        showTyping();
-                    } else if (step.type === 'sender_text_typing') { 
-                        await typeSenderMessage(step.text, step.delay);
+                addMessage(text, senderClass) {
+                    const messageElement = document.createElement('div');
+                    messageElement.classList.add('message', senderClass);
+                    messageElement.textContent = text;
+                    this.chatWindow.insertBefore(messageElement, this.typingIndicator);
+                    this.chatWindow.scrollTop = this.chatWindow.scrollHeight; 
+                    
+                    if (senderClass === 'recipient') {
+                        receiveAudio.play().catch(e => console.log(`[Chat ${this.id}] Errore riproduzione audio ricezione:`, e));
                     }
                 }
 
-                // Pausa di 15 secondi prima di ricominciare
-                await sleep(15000); 
+                showTyping() { 
+                    this.typingIndicator.style.display = 'flex'; 
+                    this.chatWindow.scrollTop = this.chatWindow.scrollHeight; 
+                }
+                hideTyping() { 
+                    this.typingIndicator.style.display = 'none'; 
+                }
 
-                const messages = chatWindow.querySelectorAll('.message');
-                messages.forEach(msg => msg.remove());
-                
-                hideTyping();
-                resetInputBar();
+                async typeSenderMessage(text, duration) {
+                    this.inputTypingText.style.display = 'none';
+                    this.inputMessageTypingContainer.style.display = 'flex'; 
+                    this.inputMessageTyping.textContent = ''; 
+                    
+                    if (typingAudio.paused) {
+                        typingAudio.play().catch(e => console.log(`[Chat ${this.id}] Errore riproduzione audio digitazione:`, e));
+                    }
+                    
+                    const charDelay = duration / text.length; 
+                    
+                    for (let i = 0; i < text.length; i++) {
+                        this.inputMessageTyping.textContent += text.charAt(i);
+                        this.chatWindow.scrollTop = this.chatWindow.scrollHeight; 
+                        await sleep(charDelay);
+                    }
+                    
+                    typingAudio.pause();
+                    typingAudio.currentTime = 0; 
+                }
 
-                await sleep(500);
-                runChatScript(); 
+                resetInputBar() {
+                    this.inputTypingText.style.display = 'block';
+                    this.inputMessageTypingContainer.style.display = 'none';
+                    this.inputMessageTyping.textContent = '';
+                    
+                    typingAudio.pause();
+                    typingAudio.currentTime = 0;
+                }
+
+                async runScript() {
+                    this.hideTyping();
+                    this.resetInputBar();
+
+                    for (const step of this.script) {
+                        await sleep(step.delay);
+
+                        if (step.type === 'message') {
+                            this.hideTyping();
+                            this.resetInputBar(); 
+                            this.addMessage(step.text, step.sender);
+                        } else if (step.type === 'typing') { 
+                            this.showTyping();
+                        } else if (step.type === 'sender_text_typing') { 
+                            await this.typeSenderMessage(step.text, step.delay);
+                        }
+                    }
+
+                    await sleep(15000); 
+
+                    const messages = this.chatWindow.querySelectorAll('.message');
+                    messages.forEach(msg => msg.remove());
+                    
+                    this.hideTyping();
+                    this.resetInputBar();
+
+                    await sleep(500);
+                    this.script = generateRandomScript();
+                    this.runScript(); 
+                }
             }
 
-            runChatScript();
+            // =================================================================
+            // === AVVIO DELLE DUE CHAT ===
+            // =================================================================
+
+            // Genera due script iniziali e diversi
+            let script1 = generateRandomScript();
+            let script2;
+
+            do {
+                script2 = generateRandomScript();
+            } while (JSON.stringify(script1) === JSON.stringify(script2)); // Assicura che siano diversi
+
+            // Crea e avvia i controller per le due chat
+            const chat1 = new ChatController(1, script1);
+            const chat2 = new ChatController(2, script2);
+
+            chat1.runScript();
+            sleep(Math.random() * 1000).then(() => chat2.runScript());
 
         });
     </script>
