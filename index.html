@@ -1,305 +1,277 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>iPhone Chat — Demo automatica</title>
-  <style>
-    /* ---------- VARIABILI BASE ---------- */
-    :root {
-      --bg: #ffffff;
-      --bubble-in: #e5e5ea;
-      --bubble-out: #34c759;
-      --text-in: #000000;
-      --text-out: #ffffff;
-      --font: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chat Scriptata</title>
+    
+    <style>
+        /* Impostazioni globali */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* Nasconde lo scroll del body */
+        }
 
-    /* ---------- STRUTTURA BASE ---------- */
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      font-family: var(--font);
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
+        /* Il "telefono" che contiene la chat */
+        #chat-container {
+            width: 100%;
+            max-width: 450px; /* Larghezza tipica di un'app in visualizzazione web */
+            height: 100vh; /* Occupa tutto lo schermo in altezza */
+            max-height: 800px; /* Limite massimo per schermi grandi */
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Nasconde lo scroll interno */
+        }
 
-    /* ---------- SCHERMATA TELEFONO ---------- */
-    #screen {
-      width: 360px;
-      max-width: 100%;
-      height: 780px;
-      border-radius: 28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      overflow: hidden;
-      background: linear-gradient(#f8f8f8, #fff);
-      position: relative;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
+        /* Intestazione finta di iMessage */
+        #chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: center;
+            position: relative;
+        }
 
-    /* ---------- STATUS BAR ---------- */
-    .status-bar {
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 14px;
-      color: #666;
-      font-size: 14px;
-    }
+        #chat-header .contact-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
 
-    /* ---------- CHAT ---------- */
-    .chat {
-      flex: 1;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-    }
+        /* Finestra dove appaiono i messaggi */
+        #chat-window {
+            flex-grow: 1;
+            padding: 20px 10px;
+            overflow-y: auto; /* Abilita lo scroll verticale */
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Spazio tra i messaggi */
+        }
 
-    /* ---------- MESSAGGI ---------- */
-    .message {
-      max-width: 78%;
-      padding: 10px 14px;
-      border-radius: 18px;
-      font-size: 15px;
-      line-height: 1.3;
-      word-break: break-word;
-      box-shadow: 0 1px 0 rgba(0,0,0,0.03);
-    }
+        /* Stile generico per una bolla di messaggio */
+        .message {
+            padding: 12px 18px;
+            border-radius: 20px;
+            line-height: 1.4;
+            max-width: 75%;
+            word-wrap: break-word; /* Va a capo se il testo è lungo */
+            
+            /* Animazione di entrata */
+            opacity: 0;
+            transform: scale(0.9);
+            animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
 
-    .message.in {
-      align-self: flex-start;
-      background: var(--bubble-in);
-      color: var(--text-in);
-      border-top-left-radius: 4px;
-    }
+        /* Messaggio del "Destinatario" (grigio, a sinistra) */
+        .message.recipient {
+            align-self: flex-start;
+            background-color: #e5e5ea;
+            color: #000000;
+            border-bottom-left-radius: 5px; /* Dettaglio iMessage */
+        }
 
-    .message.out {
-      align-self: flex-end;
-      background: var(--bubble-out);
-      color: var(--text-out);
-      border-top-right-radius: 4px;
-    }
+        /* Messaggio del "Mittente" (blu, a destra) */
+        .message.sender {
+            align-self: flex-end;
+            background-color: #007aff;
+            color: #ffffff;
+            border-bottom-right-radius: 5px; /* Dettaglio iMessage */
+        }
 
-    /* ---------- ANIMAZIONE PUNTINI ---------- */
-    .typing-dots {
-      display: inline-block;
-      width: 32px;
-      height: 18px;
-      border-radius: 10px;
-      background: transparent;
-      vertical-align: middle;
-    }
+        /* Indicatore "Sta scrivendo..." (i 3 puntini) */
+        #typing-indicator {
+            display: none; /* Nascosto di default */
+            align-self: flex-start;
+            background-color: #e5e5ea;
+            color: #000000;
+            padding: 12px 18px;
+            border-radius: 20px;
+            border-bottom-left-radius: 5px;
+            width: 60px;
+            text-align: center;
+        }
 
-    .typing-dots span {
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      margin: 0 2px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.25);
-      animation: dot 1s infinite;
-    }
+        #typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #b0b0b0;
+            border-radius: 50%;
+            margin: 0 1px;
+            animation: typing-dots 1.4s infinite;
+        }
 
-    .typing-dots span:nth-child(2) { animation-delay: .15s; }
-    .typing-dots span:nth-child(3) { animation-delay: .3s; }
+        /* Animazione dei puntini */
+        #typing-indicator span:nth-child(1) { animation-delay: 0s; }
+        #typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        #typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes dot {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-      100% { transform: translateY(0); }
-    }
+        @keyframes typing-dots {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
 
-    /* ---------- BOLLA INPUT INFERIORE ---------- */
-    .input-bubble {
-      height: 50px;
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      border-top: 1px solid #ddd;
-      background: #f5f5f7;
-      color: #666;
-      font-size: 14px;
-      font-style: italic;
-    }
-  </style>
+        /* Animazione di entrata della bolla */
+        @keyframes pop-in {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Barra di input finta (non funzionante, solo estetica) */
+        #fake-input-bar {
+            padding: 10px 15px;
+            border-top: 1px solid #e0e0e0;
+            background-color: #f9f9f9;
+        }
+
+        #fake-input-box {
+            border: 1px solid #dcdcdc;
+            background-color: #ffffff;
+            border-radius: 20px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+            color: #c7c7c7; /* Testo "iMessage" in grigio chiaro */
+            font-size: 1.1rem;
+        }
+
+    </style>
 </head>
-
 <body>
-  <main id="screen" tabindex="0" aria-label="Schermata chat simulata">
-    <header class="status-bar">
-      <div class="time">9:41</div>
-      <div class="icons">🔋 100%</div>
-    </header>
 
-    <section id="chat" class="chat"></section>
+    <div id="chat-container">
+        <div id="chat-header">
+            <span class="contact-name">Destinatario</span>
+        </div>
 
-    <div id="input-bubble" class="input-bubble">...</div>
-  </main>
+        <div id="chat-window">
+            
+            <div id="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
 
-  <script>
-  (() => {
-    const chat = document.getElementById('chat');
-    const screen = document.getElementById('screen');
-    const inputBubble = document.getElementById('input-bubble');
-    let playing = true;
+        </div>
 
-    /* ---------- MESSAGGI DELLA CONVERSAZIONE ---------- */
-    const messages = [
-      { who: 'in', text: "Hey, ci sei?", delay: 800 },
-      { who: 'out', text: "Sì, dimmi.", delay: 1200 },
-      { who: 'in', text: "Ho appena visto qualcosa di incredibile oggi...", delay: 900 },
-      { who: 'out', text: "Raccontami!", delay: 1500 },
-      { who: 'in', text: "È una lunga storia — te la dico quando hai 2 minuti.", delay: 1000 },
-      { who: 'out', text: "Perfetto, aspetto.", delay: 1300 },
-      { who: 'in', text: "Ok, ora.", delay: 1000 },
-      { who: 'in', text: "Comincia così: l'ombra si avvicina e poi...", delay: 800 },
-      { who: 'out', text: "Noo, non mi spoilerare così!", delay: 1100 },
-      { who: 'in', text: "Ok ok, la prossima volta porto foto.", delay: 900 }
-    ];
+        <div id="fake-input-bar">
+            <div id="fake-input-box">
+                iMessage
+            </div>
+        </div>
+    </div>
 
-    /* ---------- AUDIO SINTETICO ---------- */
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = new AudioCtx();
 
-    function playTypeClick() {
-      const o = audioCtx.createOscillator();
-      const g = audioCtx.createGain();
-      o.type = 'square';
-      o.frequency.setValueAtTime(1200, audioCtx.currentTime);
-      g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.001);
-      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
-      o.connect(g); g.connect(audioCtx.destination);
-      o.start(); o.stop(audioCtx.currentTime + 0.09);
-    }
+    <script>
+        // Aspetta che la pagina sia completamente caricata
+        document.addEventListener("DOMContentLoaded", function() {
 
-    function playReceiveTone() {
-      const now = audioCtx.currentTime;
-      const o1 = audioCtx.createOscillator();
-      const g1 = audioCtx.createGain();
-      o1.type = 'sine'; o1.frequency.setValueAtTime(900, now);
-      g1.gain.setValueAtTime(0.001, now);
-      g1.gain.exponentialRampToValueAtTime(0.08, now + 0.01);
-      g1.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-      o1.connect(g1); g1.connect(audioCtx.destination);
-      o1.start(now); o1.stop(now + 0.16);
-    }
+            // Seleziona gli elementi HTML che ci servono
+            const chatWindow = document.getElementById('chat-window');
+            const typingIndicator = document.getElementById('typing-indicator');
 
-    /* ---------- DIGITAZIONE REALISTICA ---------- */
-    function typeInto(element, text, onChar, onComplete) {
-      let i = 0;
-      function step() {
-        if (!playing) return setTimeout(step, 200);
+            // Funzione per creare una "pausa" in millisecondi (ms)
+            const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        if (Math.random() < 0.02 && i > 2) {
-          // Simula backspace
-          element.textContent = element.textContent.slice(0, -1);
-          i--;
-          return setTimeout(step, 150);
-        }
 
-        if (i < text.length) {
-          element.textContent += text[i++];
-          onChar && onChar();
-          const delay = 40 + Math.random() * 80;
-          setTimeout(step, delay);
-          chat.scrollTop = chat.scrollHeight;
-        } else {
-          onComplete && onComplete();
-        }
-      }
-      step();
-    }
+            // =================================================================
+            // === QUI PUOI MODIFICARE LA CONVERSAZIONE ===
+            // =================================================================
+            // Definisci l'intera conversazione come un array di "passaggi".
+            // 'type': 'message' (per un messaggio) o 'typing' (per l'animazione "sta scrivendo")
+            // 'sender': 'sender' (blu, a destra) o 'recipient' (grigio, a sinistra)
+            // 'text': Il testo del messaggio
+            // 'delay': Quanti millisecondi aspettare *prima* di mostrare questo passaggio
+            
+            const conversationScript = [
+                { type: 'typing', delay: 1000 }, // Aspetta 1 sec, mostra "..."
+                { type: 'message', sender: 'recipient', text: 'Ehi, ci sei?', delay: 2000 }, // Dopo 2 sec, mostra il 1° mess
+                
+                { type: 'message', sender: 'sender', text: 'Ciao! Sì, scusa, ero al telefono.', delay: 1500 }, // Aspetta 1.5 sec
+                { type: 'message', sender: 'sender', text: 'Dimmi tutto.', delay: 500 }, // Aspetta 0.5 sec
+                
+                { type: 'typing', delay: 1000 }, // Aspetta 1 sec, mostra "..."
+                { type: 'message', sender: 'recipient', text: 'Niente di urgente.', delay: 2500 }, // Aspetta 2.5 sec
+                { type: 'message', sender: 'recipient', text: 'Volevo solo sapere se stasera ti andava di ordinare una pizza.', delay: 1000 }, // Aspetta 1 sec
 
-    /* ---------- SIMULAZIONE ---------- */
-    async function playSequence() {
-      for (const msg of messages) {
-        await waitWhilePaused(msg.delay);
+                { type: 'message', sender: 'sender', text: 'ASSOLUTAMENTE SÌ.', delay: 2000 }, // Aspetta 2 sec
+                { type: 'message', sender: 'sender', text: 'Che ore facciamo?', delay: 500 }, // Aspetta 0.5 sec
+                
+                { type: 'typing', delay: 1000 }, // Aspetta 1 sec, mostra "..."
+                { type: 'message', sender: 'recipient', text: 'Perfetto, sentiamoci verso le 19:30!', delay: 2000 } // Aspetta 2 sec
+            ];
 
-        // Se messaggio in arrivo, mostra puntini
-        if (msg.who === 'in') {
-          const typing = createTypingBubble('in');
-          chat.appendChild(typing);
-          chat.scrollTop = chat.scrollHeight;
 
-          // Durata proporzionale alla lunghezza del testo
-          const typingTime = 400 + msg.text.length * 60 + Math.random() * 300;
-          await waitWhilePaused(typingTime);
+            // Funzione per aggiungere un messaggio alla chat
+            function addMessage(text, senderClass) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', senderClass); // es. "message sender"
+                messageElement.textContent = text;
+                
+                // Inserisci il messaggio *prima* dell'indicatore di scrittura
+                chatWindow.insertBefore(messageElement, typingIndicator);
+                
+                // Scrolla automaticamente per mostrare il nuovo messaggio
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
 
-          chat.removeChild(typing);
-        } else {
-          // Mostra il testo nella bolla inferiore mentre viene scritto
-          inputBubble.textContent = '';
-          await new Promise(resolve => {
-            typeInto(inputBubble, msg.text, playTypeClick, () => resolve());
-          });
-          await waitWhilePaused(300);
-          inputBubble.textContent = '...';
-        }
+            // Funzione per mostrare l'indicatore "Sta scrivendo..."
+            function showTyping() {
+                typingIndicator.style.display = 'flex';
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+            }
 
-        // Crea la bolla effettiva
-        const bubble = document.createElement('div');
-        bubble.className = `message ${msg.who}`;
-        chat.appendChild(bubble);
-        chat.scrollTop = chat.scrollHeight;
+            // Funzione per nascondere l'indicatore
+            function hideTyping() {
+                typingIndicator.style.display = 'none';
+            }
 
-        await new Promise(resolve => {
-          typeInto(bubble, msg.text, playTypeClick, () => {
-            if (msg.who === 'in') playReceiveTone();
-            resolve();
-          });
+
+            // Funzione principale che "esegue" la chat
+            async function runChatScript() {
+                // Nascondi sempre l'indicatore all'inizio
+                hideTyping();
+
+                // Itera attraverso ogni passaggio dello script
+                for (const step of conversationScript) {
+                    
+                    // Aspetta per il 'delay' specificato
+                    await sleep(step.delay);
+
+                    if (step.type === 'message') {
+                        // Se è un messaggio:
+                        // 1. Nascondi l'indicatore (non sta più scrivendo)
+                        hideTyping();
+                        // 2. Aggiungi la bolla del messaggio
+                        addMessage(step.text, step.sender);
+                    
+                    } else if (step.type === 'typing') {
+                        // Se è 'typing':
+                        // 1. Mostra l'indicatore
+                        showTyping();
+                    }
+                }
+            }
+
+            // Avvia la chat!
+            runChatScript();
+
         });
+    </script>
 
-        await waitWhilePaused(450 + Math.random() * 700);
-      }
-    }
-
-    /* ---------- CREAZIONE BOLLA CON PUNTINI ---------- */
-    function createTypingBubble(who) {
-      const el = document.createElement('div');
-      el.className = `message ${who}`;
-      const dots = document.createElement('span');
-      dots.className = 'typing-dots';
-      dots.innerHTML = '<span></span><span></span><span></span>';
-      el.appendChild(dots);
-      return el;
-    }
-
-    /* ---------- UTILITY ATTESA ---------- */
-    function waitWhilePaused(ms) {
-      return new Promise(res => {
-        const start = performance.now();
-        function tick() {
-          if (!playing) return setTimeout(tick, 150);
-          const elapsed = performance.now() - start;
-          if (elapsed >= ms) return res();
-          setTimeout(tick, Math.min(120, ms - elapsed));
-        }
-        tick();
-      });
-    }
-
-    /* ---------- PLAY / PAUSA ---------- */
-    function togglePlay() {
-      playing = !playing;
-      if (playing && audioCtx.state === 'suspended') audioCtx.resume();
-      screen.style.opacity = playing ? '1' : '0.7';
-    }
-
-    screen.addEventListener('click', togglePlay);
-    playSequence();
-  })();
-  </script>
 </body>
 </html>
