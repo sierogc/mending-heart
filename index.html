@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>❤️‍🩹</title>
+    <title>Due Chat con Ruoli Invertiti nella Seconda (Un Messaggio per Turno)</title>
     
     <style>
         /* Impostazioni globali */
@@ -140,7 +140,8 @@
             
             width: auto; 
             height: auto; 
-             
+            
+            display: flex; 
             align-items: center;
             justify-content: center; 
             box-sizing: content-box; 
@@ -335,125 +336,43 @@
             // =================================================================
             // === MESSAGGI BASE E GENERAZIONE RANDOMICA ===
             // =================================================================
-
+            
+            // Liste dei messaggi (dall'utente)
             const senderMessages = [
-                'Sì, scusa.',
-                'Dimmi',
-                'AHAHAHAHAHAH',
-                'Non mi stressare',
-                'Sto arrivando',
-                'A che ora ci vediamo stasera?',
-                'Tutto bene?',
-                'Va bene',
-                'È quello che ti meriti.',
-                'Sei riuscito a prenderlo?',
-                'Are we gonna fuck again?',
-                'Sei partito?',
-                'Ti accompagna?',
-                'Dove sei?',
-                'Non ti preoccupare.',
-                'Ma che vuoi?',
-                'Va bene riso con pollo?',
-                'Tu hai le chiavi?',
-                'Ok',
-                'Dai torna.',
-                'Come vuoi',
-                'Lasciamo perdere',
-                'Ti amoooooooo',
-                'Amore mio',
-                'wanted to ask whether u know a cute bar',
-                'yes...',
-                'Vieni al ristorante',
-                'Sto prendendo la macchina. 10 minuti',
-                'Cosa stai facendo?',
-                'Ma che vuole questa?',
-                'La conosci?',
-                'Lo conosci?',
-                'how are u?',
-                'È tardi dove sei',
-                'Ma cosa ti aspettavi scusa?',
-                'Non è vero.',
-                'qt what are up to?',
-                'Sono qui sotto, apri',
-                'Posso venire anche stasera?',
-                'Ti serve qualcosa?',
-                'Sei con i tuoi amici?',
-                'Possiamo parlare?',
-                'Puoi andare tu al supermercato?',
-                'Li hai i soldi?',
-                'funny',
-                'ok thx',
-                'Grazie davvero per ieri',
-                'Risolto',
-                'Ti invio paypal',
-                'Eh',
-                'Salutami mamma e papà',
-                'Pizza?',
-                'Bella',
-                'Vai dalle tue amiche.',
-                'Sì, la ho in borsa.',
-                'Ti odio.'
+                'Sì, scusa.', 'Dimmi', 'AHAHAHAHAHAH', 'Non mi stressare', 'Sto arrivando', 
+                'A che ora ci vediamo stasera?', 'Tutto bene?', 'Va bene', 'È quello che ti meriti.', 
+                'Sei riuscito a prenderlo?', 'Are we gonna fuck again?', 'Sei partito?', 'Ti accompagna?', 
+                'Dove sei?', 'Non ti preoccupare.', 'Ma che vuoi?', 'Va bene riso con pollo?', 
+                'Tu hai le chiavi?', 'Ok', 'Dai torna.', 'Come vuoi', 'Lasciamo perdere', 'Ti amoooooooo', 
+                'Amore mio', 'wanted to ask whether u know a cute bar', 'yes...', 'Vieni al ristorante', 
+                'Sto prendendo la macchina. 10 minuti', 'Cosa stai facendo?', 'Ma che vuole questa?', 
+                'La conosci?', 'Lo conosci?', 'how are u?', 'È tardi dove sei', 'Ma cosa ti aspettavi scusa?', 
+                'Non è vero.', 'qt what are up to?', 'Sono qui sotto, apri', 'Posso venire anche stasera?', 
+                'Ti serve qualcosa?', 'Sei con i tuoi amici?', 'Possiamo parlare?', 'Puoi andare tu al supermercato?', 
+                'Li hai i soldi?', 'funny', 'ok thx', 'Grazie davvero per ieri', 'Risolto', 'Ti invio paypal', 
+                'Eh', 'Salutami mamma e papà', 'Pizza?', 'Bella', 'Vai dalle tue amiche.', 'Sì, la ho in borsa.', 'Ti odio.'
             ];
 
             const fixedRecipientStart = 'Ciao, ci sei?';
             const recipientMessagesPool = [
-                'Volevo solo sapere come stai',
-                'Perfetto, ti scrivo domani mattina',
-                'Quando arrivi? Ti aspetto fuori.',
-                'Hai già mangiato?',
-                'Mi fai sapere il prima possibile perfavore?',
-                'Sì, ho visto il messaggio. Grazie.',
-                'Buona idea.',
-                'Smettila.',
-                'Seriamente? Questo è tutto quello che hai dire?',
-                'Ti amo grazie',
-                'Non ti sopporto',
-                'Se non ci fossi tu...',
-                'Ma si può sapere che vuoi?',
-                'Cazzo sono in trip',
-                'Sono uscito ora.',
-                'Ascolta questa hit',
-                'Non ce la faccio più',
-                'Amore ci sei?',
-                'Cosa facciamo stasera?',
-                'Hai visto il video?',
-                'Mi sta antipatico',
-                'Ti sei già rifidanzata?',
-                'Okok',
-                'Brava. Sono fiero di te.',
-                'What do u mean?',
-                'Nah, ure safe.',
-                'idk honestly',
-                'fine thx how abt u?',
-                'We had great sex.',
-                'Queste zanzare mi stanno uccidendo.',
-                'Sto pensando a una cosa',
-                'Ho finito i soldi. Mi fai una ricarica?',
-                'Mi servono 10 euro perfavore.',
-                'Dai ti prego',
-                'Amo ma perchè non mi scrivi?',
-                'Mi manchi un sacco.',
-                'Sei sicura?',
-                'Fai tu.',
-                'ahahahah',
-                'Sì, questo lo so. Non sono mica stupido.',
-                'Ma sei ossessionata?',
-                'Non riesci ad andare avanti?',
-                'Mollami.',
-                'Stiamo prendendo due strade diverse.',
-                'Hai visto che è successo? Cosa hanno detto gli altri?',
-                'Sono diverso.',
-                'Sono cambiato, questa volta per davvero.',
-                'Ho sempre avuto ragione.',
-                'Sei sempre stata così.',
-                'È già pronto?',
-                'Perchè devi fare così?',
-                'Ti dimentichi sempre quello che ti conviene dimenticare.',
-                'Ho sbagliato.',
-                'Ti conviene fare così?',
-                'Non sono stupido.',
-                'Facciamo pace.'
+                'Volevo solo sapere come stai', 'Perfetto, ti scrivo domani mattina', 'Quando arrivi? Ti aspetto fuori.', 
+                'Hai già mangiato?', 'Mi fai sapere il prima possibile perfavore?', 'Sì, ho visto il messaggio. Grazie.', 
+                'Buona idea.', 'Smettila.', 'Seriamente? Questo è tutto quello che hai dire?', 'Ti amo grazie', 
+                'Non ti sopporto', 'Se non ci fossi tu...', 'Ma si può sapere che vuoi?', 'Cazzo sono in trip', 
+                'Sono uscito ora.', 'Ascolta questa hit', 'Non ce la faccio più', 'Amore ci sei?', 
+                'Cosa facciamo stasera?', 'Hai visto il video?', 'Mi sta antipatico', 'Ti sei già rifidanzata?', 
+                'Okok', 'Brava. Sono fiero di te.', 'What do u mean?', 'Nah, ure safe.', 'idk honestly', 
+                'fine thx how abt u?', 'We had great sex.', 'Queste zanzare mi stanno uccidendo.', 
+                'Sto pensando a una cosa', 'Ho finito i soldi. Mi fai una ricarica?', 'Mi servono 10 euro perfavore.', 
+                'Dai ti prego', 'Amo ma perchè non mi scrivi?', 'Mi manchi un sacco.', 'Sei sicura?', 'Fai tu.', 
+                'ahahahah', 'Sì, questo lo so. Non sono mica stupido.', 'Ma sei ossessionata?', 
+                'Non riesci ad andare avanti?', 'Mollami.', 'Stiamo prendendo due strade diverse.', 
+                'Hai visto che è successo? Cosa hanno detto gli altri?', 'Sono diverso.', 
+                'Sono cambiato, questa volta per davvero.', 'Ho sempre avuto ragione.', 'Sei sempre stata così.', 
+                'È già pronto?', 'Perchè devi fare così?', 'Ti dimentichi sempre quello che ti conviene dimenticare.', 
+                'Ho sbagliato.', 'Ti conviene fare così?', 'Non sono stupido.', 'Facciamo pace.'
             ];
+
 
             function shuffleArray(array) {
                 const newArray = [...array];
@@ -464,98 +383,51 @@
                 return newArray;
             }
 
-            // Funzione MODIFICATA per generare uno script che usa solo un messaggio per turno
+            // *** LOGICA DI GENERAZIONE MODIFICATA PER ALTERNANZA 1-A-1 ***
             function generateRandomScript() {
                 const shuffledSender = shuffleArray(senderMessages);
                 const shuffledRecipientBody = shuffleArray(recipientMessagesPool);
                 
                 const script = [];
-                let senderIndex = 0;
-                let recipientIndex = 0;
-                let senderCount = 0;
-                let recipientCount = 0;
 
                 // 1. Frase iniziale fissa del destinatario
                 const initialText = fixedRecipientStart;
-                const initialTypingDuration = initialText.length * (Math.random() * 50 + 70); // Durata proporzionale
+                const initialTypingDuration = initialText.length * (Math.random() * 50 + 70); 
                 script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
-                script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(initialTypingDuration) }); // DURATA PROPORZIONALE
+                script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(initialTypingDuration) }); 
                 script.push({ type: 'message', sender: 'recipient', text: initialText, delay: Math.floor(Math.random() * 1500) + 1000 });
-                recipientCount++; 
 
-                // 2. Corpo della conversazione casuale bilanciata
-                while (senderIndex < shuffledSender.length || recipientIndex < shuffledRecipientBody.length) {
+                // 2. Corpo della conversazione in STRETTA ALTERNANZA
+                // Determina la lunghezza massima per assicurarsi che entrambi i pool vengano utilizzati
+                const maxLength = Math.max(shuffledSender.length, shuffledRecipientBody.length);
+                
+                for (let i = 0; i < maxLength; i++) {
                     
-                    let nextIsRecipient;
-                    
-                    if (senderCount === recipientCount) {
-                        nextIsRecipient = Math.random() < 0.5;
-                    } else if (senderCount < recipientCount) {
-                        nextIsRecipient = Math.random() < 0.3; 
-                    } else { 
-                        nextIsRecipient = Math.random() < 0.7; 
+                    // TURNO DEL MITTENTE (Sender)
+                    // (Il primo turno del loop è del sender, dato che il recipient ha iniziato)
+                    if (i < shuffledSender.length) { 
+                        const text = shuffledSender[i]; 
+                        const typingTime = text.length * (Math.random() * 50 + 50); 
+                        
+                        script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
+                        script.push({ type: 'sender_text_typing_start', text: text, delay: Math.round(typingTime) });
+                        script.push({ type: 'message', sender: 'sender', text: text, delay: Math.floor(Math.random() * 500) + 200 });
                     }
 
-
-                    if (nextIsRecipient && recipientIndex < shuffledRecipientBody.length) {
-                        // Turno del Destinatario: Inizia a digitare -> Invia messaggio
-                        const text = shuffledRecipientBody[recipientIndex];
-                        const typingDuration = text.length * (Math.random() * 50 + 70); // Durata proporzionale
+                    // TURNO DEL DESTINATARIO (Recipient)
+                    if (i < shuffledRecipientBody.length) { 
+                        const text = shuffledRecipientBody[i]; 
+                        const typingDuration = text.length * (Math.random() * 50 + 70);
                         
-                        // 1. Aspetta un tempo di reazione
                         script.push({ type: 'wait', delay: Math.floor(Math.random() * 1500) + 500 });
-                        // 2. Inizia a digitare (durata proporzionale)
                         script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(typingDuration) }); 
-                        // 3. Invia il messaggio
                         script.push({ type: 'message', sender: 'recipient', text: text, delay: Math.floor(Math.random() * 1000) + 500 });
-                        recipientIndex++;
-                        recipientCount++;
-                    } 
-                    
-                    else if (!nextIsRecipient && senderIndex < shuffledSender.length) {
-                        // Turno del Mittente: Inizia a digitare -> Invia messaggio
-                        
-                        const text = shuffledSender[senderIndex];
-                        const typingTime = text.length * (Math.random() * 50 + 50); // Durata proporzionale anche qui
-                        
-                        // 1. Aspetta un tempo di reazione
-                        script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
-                        // 2. Inizia a digitare (simula la durata della digitazione nell'input)
-                        script.push({ type: 'sender_text_typing_start', text: text, delay: Math.round(typingTime) });
-                        // 3. Invia il messaggio
-                        script.push({ type: 'message', sender: 'sender', text: text, delay: Math.floor(Math.random() * 500) + 200 });
-                        senderIndex++;
-                        senderCount++;
-                    } 
-                    
-                    else {
-                        // Gestione dei pool in esaurimento (caso estremo)
-                         if (senderIndex < shuffledSender.length) {
-                            const text = shuffledSender[senderIndex];
-                            const typingTime = text.length * (Math.random() * 50 + 50); 
-                            
-                            script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
-                            script.push({ type: 'sender_text_typing_start', text: text, delay: Math.round(typingTime) });
-                            script.push({ type: 'message', sender: 'sender', text: text, delay: Math.floor(Math.random() * 500) + 200 });
-                            senderIndex++;
-                            senderCount++;
-                        } else if (recipientIndex < shuffledRecipientBody.length) {
-                            const text = shuffledRecipientBody[recipientIndex];
-                            const typingDuration = text.length * (Math.random() * 50 + 70);
-                            
-                            script.push({ type: 'wait', delay: Math.floor(Math.random() * 1000) + 500 });
-                            script.push({ type: 'typing_start', sender: 'recipient', delay: Math.round(typingDuration) }); 
-                            script.push({ type: 'message', sender: 'recipient', text: text, delay: Math.floor(Math.random() * 1000) + 500 });
-                            recipientIndex++;
-                            recipientCount++;
-                        } else {
-                            break;
-                        }
                     }
                 }
                 
                 return script;
             }
+
 
             // Funzione per generare e garantire l'unicità degli script
             function generateUniqueScripts() {
@@ -615,9 +487,6 @@
                     messageElement.textContent = text;
                     this.chatWindow.insertBefore(messageElement, this.typingIndicator);
                     
-                    // Fai scrollare in basso dopo un nuovo messaggio
-                    this.chatWindow.scrollTop = this.chatWindow.scrollHeight;
-
                     if (type === 'recipient') {
                         // Tenta la riproduzione. Se fallisce per restrizioni, il browser ignora.
                         receiveAudio.play().catch(e => {}); 
@@ -626,8 +495,6 @@
 
                 showTyping() { 
                     this.typingIndicator.style.display = 'flex'; 
-                    // Fai scrollare in basso quando l'indicatore appare
-                    this.chatWindow.scrollTop = this.chatWindow.scrollHeight;
                 }
                 hideTyping() { 
                     this.typingIndicator.style.display = 'none'; 
@@ -684,7 +551,7 @@
                             await sleep(step.delay); // Attende il tempo proporzionale
                         } else if (step.type === 'sender_text_typing_start') { 
                             // Avvia la digitazione nella barra di input per il Sender
-                            await sleep(step.delay); 
+                            // (Rimosso 'await sleep(step.delay);' da qui, perché la durata è già gestita da typeSenderMessage)
                             await this.typeSenderMessage(step.text, step.delay);
                         }
                     }
@@ -725,8 +592,8 @@
             }
 
             async function startNewIteration() {
-                // PAUSA DI 15 SECONDI
-                await sleep(15000); 
+                // *** MODIFICA CHIAVE: PAUSA DI 10 SECONDI ***
+                await sleep(10000); 
 
                 chat1.chatWindow.querySelectorAll('.message').forEach(msg => msg.remove());
                 chat2.chatWindow.querySelectorAll('.message').forEach(msg => msg.remove());
